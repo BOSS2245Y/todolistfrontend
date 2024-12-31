@@ -34,7 +34,7 @@ function App() {
     dueDate: '',
   });
   
-  const [loginForm, setLoginForm] = useState({ username: 'himanshu', email:"", password: '1234' });
+  const [loginForm, setLoginForm] = useState({ username: '', email:"", password: '' });
   const [showLoginModal, setShowLoginModal] = useState(true);
   
   // const LoginForm = () => {
@@ -137,7 +137,7 @@ function App() {
       if (response.status === 200) {
         // Handle successful logout
         setIsLoggedIn(false);
-        setLoginForm({ username: 'himanshu', password: '1234' });
+        setLoginForm({ username: '', password: '' });
         setShowLoginModal(true);
       } else {
         // Handle unexpected response
