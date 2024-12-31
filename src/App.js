@@ -246,55 +246,55 @@ function App() {
   };
   
 
-  const handleEditTask = async (id) => {
+  // const handleEditTask = async (id) => {
     
     
-    setTasks(tasks.filter((task) => task.id !== id));
-    // console.log('Updating task with ID:', id);
+  //   setTasks(tasks.filter((task) => task.id !== id));
+  //   // console.log('Updating task with ID:', id);
   
-    if (!id) {
-      alert('Task ID is missing. Cannot update task.');
-      return;
-    }
-    const taskToEdit = tasks.find((task) => task._id === id);
-    setFormData(taskToEdit);
-    if (!taskToEdit) {
-      alert('Task not found. Cannot update.');
-      return;
-    }
+  //   if (!id) {
+  //     alert('Task ID is missing. Cannot update task.');
+  //     return;
+  //   }
+  //   const taskToEdit = tasks.find((task) => task._id === id);
+  //   setFormData(taskToEdit);
+  //   if (!taskToEdit) {
+  //     alert('Task not found. Cannot update.');
+  //     return;
+  //   }
      
-    if(editingTaskId){
+  //   if(editingTaskId){
     
-  }else{
-    try {
-      // console.log('Updated Task Payload:', formData);
+  // }else{
+  //   try {
+  //     // console.log('Updated Task Payload:', formData);
   
-      const response = await axios.patch(
-        `/api/v1/tasks/update/${id}`,
-        formData
-      );
-      // console.log('API Response:', response.data);
+  //     const response = await axios.patch(
+  //       `/api/v1/tasks/update/${id}`,
+  //       formData
+  //     );
+  //     // console.log('API Response:', response.data);
   
-      if (response.data.success) {
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === id ? response.data.data : task
-          )
-        );
-      } else {
-        console.error('Failed to update task:', response.data.message);
-      }
-    } catch (error) {
-      if (error.response) {
-        console.error('Backend error response:', error.response.data);
-      } else {
-        console.error('Error updating task:', error.message);
-      }
-      alert('An error occurred while updating the task.');
-    }
+  //     if (response.data.success) {
+  //       setTasks((prevTasks) =>
+  //         prevTasks.map((task) =>
+  //           task._id === id ? response.data.data : task
+  //         )
+  //       );
+  //     } else {
+  //       console.error('Failed to update task:', response.data.message);
+  //     }
+  //   } catch (error) {
+  //     if (error.response) {
+  //       console.error('Backend error response:', error.response.data);
+  //     } else {
+  //       console.error('Error updating task:', error.message);
+  //     }
+  //     alert('An error occurred while updating the task.');
+  //   }
 
-  }
-  };
+  // }
+  // };
 
   const handleEditButtonClick = (id) => {
     const taskToEdit = tasks.find((task) => task._id === id);
