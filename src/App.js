@@ -12,23 +12,61 @@ const BASE_URL = 'https://todolist-eu2f.onrender.com';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const fetchTasks = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
-      console.log('Fetched tasks response:', response);
-      const { accessToken } = response.data;
+  // const fetchTasks = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
+  //     console.log('Fetched tasks response:', response);
+  //     const { accessToken } = response.data;
 
-      // Store token in localStorage
-      localStorage.setItem("accessToken", accessToken);
+  //     // Store token in localStorage
+  //     localStorage.setItem("accessToken", accessToken);
       
   
+  //     if (response.data && Array.isArray(response.data.data)) {
+  //       setTasks(response.data.data); // Ensure only the array is set
+  //     } else {
+  //       console.error('Invalid response format:', response);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching tasks:', error);
+  //   }
+  // };
+
+  const fetchTasks = async () => {
+    try {
+      // Retrieve the token from localStorage
+      const accessToken = localStorage.getItem("accessToken");
+  
+      // If no token is available, you could handle it here, e.g., redirect to login
+      if (!accessToken) {
+        console.log("No access token found, redirecting to login");
+        
+        return;
+      }
+  
+      // Add the token to the Authorization header
+      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Attach token to the request
+        },
+      });
+  
+      console.log("Fetched tasks response:", response);
+  
+      // If tasks data is available and properly formatted, set them
       if (response.data && Array.isArray(response.data.data)) {
-        setTasks(response.data.data); // Ensure only the array is set
+        setTasks(response.data.data); // Store tasks in state
       } else {
-        console.error('Invalid response format:', response);
+        console.error("Invalid response format:", response);
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      // Error handling, in case the token is invalid or expired
+      console.error("Error fetching tasks:", error);
+      if (error.response && error.response.status === 401) {
+        // Token might have expired, redirect to login
+        console.log("Unauthorized access, please login again.");
+       
+      }
     }
   };
   useEffect((isLoggedIn) => {
@@ -113,9 +151,14 @@ function App() {
             usernameOrEmail, // Dynamically set field based on input
             password: password,
           });
+          
           console.log('Login successful:', response.data);
           if (response.status === 200) {
             // Handle successful login
+            const { accessToken } = response.data;
+
+        // Store token in localStorage
+        localStorage.setItem("accessToken", accessToken);
             setIsLoggedIn(true);
             setShowLoginModal(false);
             alert(response.message);
@@ -144,7 +187,7 @@ function App() {
       console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
-        localStorage.removeItem("accessToken");
+        
         setIsLoggedIn(false);
         setLoginForm({ username: '', password: '' });
         setShowLoginModal(true);
