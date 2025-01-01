@@ -16,6 +16,7 @@ function App() {
     try {
       const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
       console.log('Fetched tasks response:', response);
+      
   
       if (response.data && Array.isArray(response.data.data)) {
         setTasks(response.data.data); // Ensure only the array is set
