@@ -252,7 +252,7 @@ function App() {
       return;
     }
     try {
-      const response = await axios.delete(`${BASE_URL}api/v1/tasks/delete/${id}`);
+      const response = await axios.delete(`${BASE_URL}/api/v1/tasks/delete/${id}`);
       if (response.status === 200) {
         alert('Task deleted successfully');
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
