@@ -144,6 +144,7 @@ function App() {
       console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
+        localStorage.removeItem("accessToken");
         setIsLoggedIn(false);
         setLoginForm({ username: '', password: '' });
         setShowLoginModal(true);
