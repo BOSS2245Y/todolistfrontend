@@ -16,6 +16,10 @@ function App() {
     try {
       const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
       console.log('Fetched tasks response:', response);
+      const { accessToken } = response.data;
+
+      // Store token in localStorage
+      localStorage.setItem("accessToken", accessToken);
       
   
       if (response.data && Array.isArray(response.data.data)) {
