@@ -145,12 +145,24 @@ function App() {
   const handleLogin =  async () => {
     
     const { usernameOrEmail , password } = loginForm;
+    if(!usernameOrEmail || !password){
+      return alert("feilds are required")
+    }
         try{
           
-          const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
-            usernameOrEmail, // Dynamically set field based on input
-            password: password,
-          });
+          // const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
+          //   usernameOrEmail, // Dynamically set field based on input
+          //   password: password,
+          // });
+
+          const url=`${BASE_URL}/api/v1/users/login`;
+          const response =await fetch(url,{
+            method:"POST",
+            headers:{
+              'Content-Type':'application/json'
+            },
+            body:JSON.stringify(loginForm)
+          })
           
           console.log('Login successful:', response.data);
           if (response.status === 200) {
@@ -182,6 +194,7 @@ function App() {
   };
 
   const handleLogout = async () => {
+
     try {
       const response = await axios.post(`${BASE_URL}/api/v1/users/logout`)
       console.log('Logout successful:', response.data)
