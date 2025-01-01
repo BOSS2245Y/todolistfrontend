@@ -9,6 +9,9 @@ import { Container, Row, Col, Form, Button, Navbar, Nav, Modal } from 'react-boo
 
 const BASE_URL = 'https://todolist-eu2f.onrender.com';
 
+
+
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,7 +31,8 @@ function App() {
         console.error('Invalid response format:', response);
       }
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      console.error('Error fetching tasks:', error.response?.data || error.message);
+      return [];
     }
   };
 
