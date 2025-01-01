@@ -79,7 +79,7 @@ function App() {
           console.log('Login successful:', response.data);
           if (response.status === 200) {
             // Handle successful login
-            const { accessToken } = response.accessToken;
+            const { accessToken } = response.data;
 
         // Store token in localStorage
         localStorage.setItem("accessToken", accessToken);
