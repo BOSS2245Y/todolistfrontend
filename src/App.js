@@ -15,9 +15,10 @@ const BASE_URL = 'https://todolist-eu2f.onrender.com';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const fetchTasks = async () => {
+  const fetchTasks = async (e) => {
+    e.preventDefault()
     try {
-      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
+      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`,{withCredentials:true});
       console.log('Fetched tasks response:', response);
       
 
@@ -32,12 +33,12 @@ function App() {
       }
     } catch (error) {
       console.error('Error fetching tasks:', error.response?.data || error.message);
-      return [];
+      return ;
     }
   };
 
   
-  useEffect((isLoggedIn) => {
+  useEffect(() => {
     fetchTasks();
   }, [isLoggedIn]);
   
@@ -64,8 +65,8 @@ function App() {
 
  
 
-  const handleLogin =  async () => {
-    
+  const handleLogin =  async (e) => {
+    e.preventDefault()
     const { usernameOrEmail , password } = loginForm;
     if(!usernameOrEmail || !password){
       return alert("feilds are required")
