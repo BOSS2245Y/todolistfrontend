@@ -19,10 +19,10 @@ function App() {
     try {
       const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
       console.log('Fetched tasks response:', response);
-      const { accessToken } = response.data;
+      
 
       // Store token in localStorage
-      localStorage.setItem("accessToken", accessToken);
+      
       
   
       if (response.data && Array.isArray(response.data.data)) {
@@ -75,7 +75,7 @@ function App() {
           const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
             usernameOrEmail, // Dynamically set field based on input
             password: password,
-          });
+          },{withCredentials:true});
 
           
          
@@ -83,10 +83,10 @@ function App() {
           console.log('Login successful:', response.data);
           if (response.status === 200) {
             // Handle successful login
-            const { accessToken } = response.data;
+           
 
         // Store token in localStorage
-        localStorage.setItem("accessToken", accessToken);
+        
             setIsLoggedIn(true);
             setShowLoginModal(false);
             alert(response.message);
