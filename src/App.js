@@ -3,15 +3,18 @@
 
 import React, { useState ,useEffect} from 'react';
 import axios from "axios"
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button, Navbar, Nav, Modal } from 'react-bootstrap';
+
+const BASE_URL = 'https://todolist-eu2f.onrender.com';
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const fetchTasks = async () => {
     try {
-      const response = await axios.get('/api/v1/tasks/getAllTasks');
+      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
       // console.log('Fetched tasks response:', response);
   
       if (response.data && Array.isArray(response.data.data)) {
@@ -101,7 +104,7 @@ function App() {
     const { usernameOrEmail , password } = loginForm;
         try{
           
-          const response = await axios.post("/api/v1/users/login", {
+          const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
             usernameOrEmail, // Dynamically set field based on input
             password: password,
           });
@@ -132,7 +135,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post("/api/v1/users/logout")
+      const response = await axios.post(`${BASE_URL}/api/v1/users/logout`)
       // console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
@@ -176,7 +179,7 @@ function App() {
         
     
         const response = await axios.patch(
-          `/api/v1/tasks/update/${editingTaskId}`,
+          `${BASE_URL}/api/v1/tasks/update/${editingTaskId}`,
           formData
         );
         // console.log('API Response:', response.data);
@@ -204,7 +207,7 @@ function App() {
     }else{
       const { title,description , category,dueDate } = formData;
     try {
-      const response = await axios.post('/api/v1/tasks/add', {
+      const response = await axios.post(`${BASE_URL}/api/v1/tasks/add`, {
         title,
         description,
         category,
@@ -317,7 +320,7 @@ function App() {
       return;
     }
     try {
-      const response = await axios.delete(`api/v1/tasks/delete/${id}`);
+      const response = await axios.delete(`${BASE_URL}api/v1/tasks/delete/${id}`);
       if (response.status === 200) {
         alert('Task deleted successfully');
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
@@ -344,7 +347,7 @@ const handleRegisterChange = (e) => {
 
 const handleRegister = async () => {
   try {
-    const response = await axios.post("/api/v1/users/register", registerForm);
+    const response = await axios.post(`${BASE_URL}/api/v1/users/register`, registerForm);
     alert(response.data.message);
     setIsRegistering(false); // Switch back to login after registering
   } catch (error) {
