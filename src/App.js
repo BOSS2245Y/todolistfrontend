@@ -77,6 +77,14 @@ function App() {
             usernameOrEmail, // Dynamically set field based on input
             password: password,
           },{withCredentials:true});
+          const { accessToken } = response.data;
+        console.log("Access Token:", accessToken);
+
+        if (accessToken) {
+            localStorage.setItem("accessToken", accessToken); // Store token in localStorage
+        } else {
+            console.error('Access token not found in response');
+        }
 
           
          
