@@ -12,63 +12,27 @@ const BASE_URL = 'https://todolist-eu2f.onrender.com';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const fetchTasks = async () => {
-  //   try {
-  //     const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
-  //     console.log('Fetched tasks response:', response);
-  //     const { accessToken } = response.data;
-
-  //     // Store token in localStorage
-  //     localStorage.setItem("accessToken", accessToken);
-      
-  
-  //     if (response.data && Array.isArray(response.data.data)) {
-  //       setTasks(response.data.data); // Ensure only the array is set
-  //     } else {
-  //       console.error('Invalid response format:', response);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error fetching tasks:', error);
-  //   }
-  // };
-
   const fetchTasks = async () => {
     try {
-      // Retrieve the token from localStorage
-      const accessToken = localStorage.getItem("accessToken");
+      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
+      console.log('Fetched tasks response:', response);
+      const { accessToken } = response.data;
+
+      // Store token in localStorage
+      localStorage.setItem("accessToken", accessToken);
+      
   
-      // If no token is available, you could handle it here, e.g., redirect to login
-      if (!accessToken) {
-        console.log("No access token found, redirecting to login");
-        
-        return;
-      }
-  
-      // Add the token to the Authorization header
-      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`, // Attach token to the request
-        },
-      });
-  
-      console.log("Fetched tasks response:", response);
-  
-      // If tasks data is available and properly formatted, set them
       if (response.data && Array.isArray(response.data.data)) {
-        setTasks(response.data.data); // Store tasks in state
+        setTasks(response.data.data); // Ensure only the array is set
       } else {
-        console.error("Invalid response format:", response);
+        console.error('Invalid response format:', response);
       }
     } catch (error) {
-      // Error handling, in case the token is invalid or expired
-      console.error("Error fetching tasks:", error);
-      if (error.response && error.response.status === 401) {
-        // Token might have expired, redirect to login
-        console.log("Unauthorized access, please login again.");
-       
-      }
+      console.error('Error fetching tasks:', error);
     }
   };
+
+  
   useEffect((isLoggedIn) => {
     fetchTasks();
   }, [isLoggedIn]);
@@ -83,38 +47,7 @@ function App() {
   const [loginForm, setLoginForm] = useState({ username: '', email:"", password: '' });
   const [showLoginModal, setShowLoginModal] = useState(true);
   
-  // const LoginForm = () => {
-  //   const [formData, setFormData] = useState({ username:"" ,email: "", password: "" });
-  //   const [message, setMessage] = useState("");
-  
-  //   const handleLoginChange = (e) => {
-  //     const { name, value } = e.target;
-  //     setLoginForm({ ...loginForm, [name]: value });
-  //   };
-  
-  //   const handleLogin = async (e) => {
-  //     e.preventDefault();
-  //     try {
-  //       const response = await axios.post("/api/v1/users/login", formData);
-  //       setMessage(response.data.message);
-  //       if(response){
-  //         setIsLoggedIn(true);
-  //         setShowLoginModal(false);
-
-  //       }
-  //       else {
-  //         alert('Invalid credentials');
-  //       }
-  //       console.log("Token:", response.data.token); // Store token securely
-  //     } catch (error) {
-  //       if (error.response) {
-  //         setMessage(error.response.data.message);
-  //       } else {
-  //         setMessage("Something went wrong!");
-  //       }
-  //     }
-  //   };
-
+ 
  
 
   const handleLoginChange = (e) => {
@@ -125,22 +58,7 @@ function App() {
   
   
 
-  // const handleLogin = async () => {
-  //   const { username,email, password } = loginForm;
-  
-  //   try {
-  //     const response = await axios.post('http://localhost:8000/api/v1/users/login', { username,email, password });
-  //     console.log('Login successful:', response.data);
-  //     setIsLoggedIn(true);
-  //     setShowLoginModal(false);
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 404) {
-  //       alert('API endpoint not found.');
-  //     } else {
-  //       alert('Login failed. Please check your credentials or try again later.');
-  //     }
-  //   }
-  // };
+ 
 
   const handleLogin =  async () => {
     
@@ -150,19 +68,13 @@ function App() {
     }
         try{
           
-          // const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
-          //   usernameOrEmail, // Dynamically set field based on input
-          //   password: password,
-          // });
+          const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
+            usernameOrEmail, // Dynamically set field based on input
+            password: password,
+          });
 
-          const url=`${BASE_URL}/api/v1/users/login`;
-          const response =await fetch(url,{
-            method:"POST",
-            headers:{
-              'Content-Type':'application/json'
-            },
-            body:JSON.stringify(loginForm)
-          })
+          
+         
           
           console.log('Login successful:', response.data);
           if (response.status === 200) {
