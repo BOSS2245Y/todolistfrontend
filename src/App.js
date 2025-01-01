@@ -15,7 +15,7 @@ function App() {
   const fetchTasks = async () => {
     try {
       const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`);
-      // console.log('Fetched tasks response:', response);
+      console.log('Fetched tasks response:', response);
   
       if (response.data && Array.isArray(response.data.data)) {
         setTasks(response.data.data); // Ensure only the array is set
@@ -108,7 +108,7 @@ function App() {
             usernameOrEmail, // Dynamically set field based on input
             password: password,
           });
-          // console.log('Login successful:', response.data);
+          console.log('Login successful:', response.data);
           if (response.status === 200) {
             // Handle successful login
             setIsLoggedIn(true);
@@ -136,7 +136,7 @@ function App() {
   const handleLogout = async () => {
     try {
       const response = await axios.post(`${BASE_URL}/api/v1/users/logout`)
-      // console.log('Logout successful:', response.data)
+      console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
         setIsLoggedIn(false);
@@ -175,14 +175,14 @@ function App() {
     
     
       try {
-        // console.log('Updated Task Payload:', formData);
+        console.log('Updated Task Payload:', formData);
         
     
         const response = await axios.patch(
           `${BASE_URL}/api/v1/tasks/update/${editingTaskId}`,
           formData
         );
-        // console.log('API Response:', response.data);
+        console.log('API Response:', response.data);
     
         if (response.data.success) {
           setTasks((prevTasks) =>
@@ -215,7 +215,7 @@ function App() {
       });
   
       if (response.status === 201 && response.data.data) {
-        // console.log('Task added successfully:', response.data.data);
+        console.log('Task added successfully:', response.data.data);
         setTasks((prevTasks) => {
           if (!Array.isArray(prevTasks)) {
             console.error('Previous tasks state is not an array:', prevTasks);
@@ -249,56 +249,9 @@ function App() {
   };
   
 
-  // const handleEditTask = async (id) => {
-    
-    
-  //   setTasks(tasks.filter((task) => task.id !== id));
-  //   // console.log('Updating task with ID:', id);
   
-  //   if (!id) {
-  //     alert('Task ID is missing. Cannot update task.');
-  //     return;
-  //   }
-  //   const taskToEdit = tasks.find((task) => task._id === id);
-  //   setFormData(taskToEdit);
-  //   if (!taskToEdit) {
-  //     alert('Task not found. Cannot update.');
-  //     return;
-  //   }
-     
-  //   if(editingTaskId){
     
-  // }else{
-  //   try {
-  //     // console.log('Updated Task Payload:', formData);
   
-  //     const response = await axios.patch(
-  //       `/api/v1/tasks/update/${id}`,
-  //       formData
-  //     );
-  //     // console.log('API Response:', response.data);
-  
-  //     if (response.data.success) {
-  //       setTasks((prevTasks) =>
-  //         prevTasks.map((task) =>
-  //           task._id === id ? response.data.data : task
-  //         )
-  //       );
-  //     } else {
-  //       console.error('Failed to update task:', response.data.message);
-  //     }
-  //   } catch (error) {
-  //     if (error.response) {
-  //       console.error('Backend error response:', error.response.data);
-  //     } else {
-  //       console.error('Error updating task:', error.message);
-  //     }
-  //     alert('An error occurred while updating the task.');
-  //   }
-
-  // }
-  // };
-
   const handleEditButtonClick = (id) => {
     const taskToEdit = tasks.find((task) => task._id === id);
     setFormData({
@@ -313,7 +266,7 @@ function App() {
   
 
   const handleDeleteTask = async (id) => {
-    // console.log('Deleting task with id:', id);
+    console.log('Deleting task with id:', id);
     if (!id) {
       console.error('Task ID is undefined or invalid.');
       alert('Task ID is missing. Cannot delete task.');
@@ -525,7 +478,7 @@ const handleRegister = async () => {
             <ul className="list-group">
               {(Array.isArray(tasks) ? tasks : []).map((task) => (
                 <li
-                  key={task.id}
+                  key={task._id}
                   className="list-group-item mb-2"
                   style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '15px' }}
                 >
