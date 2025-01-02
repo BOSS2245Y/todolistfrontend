@@ -14,18 +14,17 @@ const BASE_URL = 'https://todolist-eu2f.onrender.com';
 
 function App() {
   const [tasks, setTasks] = useState([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const fetchTasks = async () => {
     
     try {
       const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`,{withCredentials:true});
       // console.log('Fetched tasks response:', response);
       
-
+      
       // Store token in localStorage
       
       
-  
+      
       if (response.data && Array.isArray(response.data.data)) {
         setTasks(response.data.data); // Ensure only the array is set
       } else {
@@ -36,9 +35,10 @@ function App() {
       return ;
     }
   };
-
   
-  useEffect(() => {
+  
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect((isLoggedIn) => {
     fetchTasks();
   }, [isLoggedIn]);
   
