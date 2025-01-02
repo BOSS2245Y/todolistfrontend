@@ -121,7 +121,7 @@ function App() {
   const handleLogout = async () => {
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/v1/users/logout`,{withCredentials:true})
+      const response = await axios.post(`${BASE_URL}/api/v1/users/logout`)
       console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
