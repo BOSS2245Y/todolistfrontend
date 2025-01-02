@@ -94,7 +94,7 @@ function App() {
         
             setIsLoggedIn(true);
             setShowLoginModal(false);
-            alert(response.message);
+            alert(response.data.message);
           } else {
             // Handle unexpected response
             alert('Unexpected response from server');
@@ -117,7 +117,7 @@ function App() {
   const handleLogout = async () => {
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/v1/users/logout`)
+      const response = await axios.post(`${BASE_URL}/api/v1/users/logout` ,{} ,{withCredentials:true})
       console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
