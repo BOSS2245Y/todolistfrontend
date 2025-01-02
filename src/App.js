@@ -19,7 +19,7 @@ function App() {
     
     try {
       const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`,{withCredentials:true});
-      console.log('Fetched tasks response:', response);
+      // console.log('Fetched tasks response:', response);
       
 
       // Store token in localStorage
@@ -77,8 +77,8 @@ function App() {
             usernameOrEmail, // Dynamically set field based on input
             password: password,
           },{withCredentials:true});
-          const { accessToken } = response.data;
-        console.log("Access Token:", accessToken);
+          const { accessToken } = response.data.accessToken;
+        // console.log("Access Token:", accessToken);
 
         if (accessToken) {
             localStorage.setItem("accessToken", accessToken); // Store token in localStorage
@@ -89,13 +89,13 @@ function App() {
           
          
           
-          console.log('Login successful:', response.data);
+          // console.log('Login successful:', response.data);
           if (response.status === 200) {
             // Handle successful login
            
 
         // Store token in localStorage
-        
+        localStorage.setItem("accessToken", accessToken);
             setIsLoggedIn(true);
             setShowLoginModal(false);
             alert(response.message);
@@ -125,7 +125,7 @@ function App() {
       console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
-        
+        localStorage.removeItem("accessToken");
         setIsLoggedIn(false);
         setLoginForm({ username: '', password: '' });
         setShowLoginModal(true);
