@@ -121,7 +121,7 @@ function App() {
   const handleLogout = async () => {
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/v1/users/logout`)
+      const response = await axios.post(`${BASE_URL}/api/v1/users/logout`,{withCredentials:true})
       console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
@@ -167,7 +167,7 @@ function App() {
     
         const response = await axios.patch(
           `${BASE_URL}/api/v1/tasks/update/${editingTaskId}`,
-          formData
+          formData,{withCredentials:true}
         );
         console.log('API Response:', response.data);
     
@@ -199,7 +199,7 @@ function App() {
         description,
         category,
         dueDate,
-      });
+      },{withCredentials:true});
   
       if (response.status === 201 && response.data.data) {
         console.log('Task added successfully:', response.data.data);
@@ -260,7 +260,7 @@ function App() {
       return;
     }
     try {
-      const response = await axios.delete(`${BASE_URL}/api/v1/tasks/delete/${id}`);
+      const response = await axios.delete(`${BASE_URL}/api/v1/tasks/delete/${id}`,{withCredentials:true});
       if (response.status === 200) {
         alert('Task deleted successfully');
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
@@ -287,7 +287,7 @@ const handleRegisterChange = (e) => {
 
 const handleRegister = async () => {
   try {
-    const response = await axios.post(`${BASE_URL}/api/v1/users/register`, registerForm);
+    const response = await axios.post(`${BASE_URL}/api/v1/users/register`, registerForm,{withCredentials:true});
     alert(response.data.message);
     setIsRegistering(false); // Switch back to login after registering
   } catch (error) {
