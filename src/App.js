@@ -1,148 +1,57 @@
 // Install necessary packages:
 // npm install react-bootstrap bootstrap
 
-import React, { useState ,useEffect} from 'react';
-import axios from "axios"
+import React, { useState, useEffect } from 'react';
+import axios from "axios";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container, Row, Col, Form, Button, Navbar, Nav, Modal } from 'react-bootstrap';
 
 const BASE_URL = 'https://todolist-eu2f.onrender.com';
 
-
-
-
 function App() {
+  // State Hooks
   const [tasks, setTasks] = useState([]);
-  const fetchTasks = async () => {
-    
-    try {
-      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`,{withCredentials:true});
-      // console.log('Fetched tasks response:', response);
-      
-      
-      // Store token in localStorage
-      
-      
-      
-      if (response.data && Array.isArray(response.data.data)) {
-        setTasks(response.data.data); // Ensure only the array is set
-      } else {
-        console.error('Invalid response format:', response);
-      }
-    } catch (error) {
-      console.error('Error fetching tasks:', error.response?.data || error.message);
-      return ;
-    }
-  };
-  
-  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  useEffect(() => {
-    fetchTasks();
-  }, [isLoggedIn]);
-  
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     category: '',
     dueDate: '',
   });
-  
-  const [loginForm, setLoginForm] = useState({ username: '', email:"", password: '' });
+  const [loginForm, setLoginForm] = useState({ usernameOrEmail: '', password: '' });
+  const [registerForm, setRegisterForm] = useState({ username: "", email: "", password: "" });
+  const [editingTaskId, setEditingTaskId] = useState(null); // Tracks the task being edited
   const [showLoginModal, setShowLoginModal] = useState(true);
-  
- 
- 
+  const [isRegistering, setIsRegistering] = useState(false);
 
-  const handleLoginChange = (e) => {
-        const { name, value } = e.target;
-         setLoginForm({ ...loginForm, [name]: value });
-       };
+  // Fetch tasks when `isLoggedIn` changes
+  useEffect(() => {
+    if (isLoggedIn) fetchTasks();
+  }, [isLoggedIn]);
 
-  
-  
-
- 
-
-  const handleLogin =  async () => {
-    
-    const { usernameOrEmail , password } = loginForm;
-    if(!usernameOrEmail || !password){
-      return alert("feilds are required")
+  // Helper Functions
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/v1/tasks/getAllTasks`, { withCredentials: true });
+      if (response.data && Array.isArray(response.data.data)) {
+        setTasks(response.data.data);
+      } else {
+        console.error('Invalid response format:', response);
+      }
+    } catch (error) {
+      console.error('Error fetching tasks:', error.response?.data || error.message);
     }
-        try{
-          
-          const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
-            usernameOrEmail, // Dynamically set field based on input
-            password: password,
-          },{withCredentials:true});
-          
-        // console.log("Access Token:", accessToken);
-
-       
-
-          
-         
-          
-          // console.log('Login successful:', response.data);
-          if (response.status === 200) {
-            // Handle successful login
-           
-
-        // Store token in localStorage
-        
-            setIsLoggedIn(true);
-            setShowLoginModal(false);
-            alert(response.data.message);
-          } else {
-            // Handle unexpected response
-            alert('Unexpected response from server');
-          }
-        
-          
-        
-        } catch (error) {
-          // Handle error (e.g., invalid credentials, network error, etc.)
-          if (error.response && error.response.status === 400) {
-            alert('Invalid username or password');
-          } else {
-            console.error('Error during login:', error);
-            alert('An error occurred. Please try again later.');
-          }
-        }
-
   };
 
-  const handleLogout = async () => {
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setLoginForm({ ...loginForm, [name]: value });
+  };
 
-    try {
-      const response = await axios.post(`${BASE_URL}/api/v1/users/logout` ,{} ,{withCredentials:true})
-      console.log('Logout successful:', response.data)
-      if (response.status === 200) {
-        // Handle successful logout
-        
-        setIsLoggedIn(false);
-        setLoginForm({ username: '', password: '' });
-        setShowLoginModal(true);
-      } else {
-        // Handle unexpected response
-        alert('Unexpected response from server');
-      }
-      
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        alert('Invalid username or password');
-      } else {
-        console.error('Error during logout:', error);
-        alert('An error occurred. Please try again later.');
-      }
-      
-    }
-
-
-    
-    
+  const handleRegisterChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterForm({ ...registerForm, [name]: value });
   };
 
   const handleChange = (e) => {
@@ -150,147 +59,118 @@ function App() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleAddTask = async () => {
-    
-
-    if(editingTaskId){
-    
-    
-    
-      try {
-        console.log('Updated Task Payload:', formData);
-        
-    
-        const response = await axios.patch(
-          `${BASE_URL}/api/v1/tasks/update/${editingTaskId}`,
-          formData,{withCredentials:true}
-        );
-        console.log('API Response:', response.data);
-    
-        if (response.data.success) {
-          setTasks((prevTasks) =>
-            prevTasks.map((task) =>
-              task._id === editingTaskId ? response.data.data : task
-            )
-          );
-          
-        } else {
-          console.error('Failed to update task:', response.data.message);
-        }
-      } catch (error) {
-        if (error.response) {
-          console.error('Backend error response:', error.response.data);
-        } else {
-          console.error('Error updating task:', error.message);
-        }
-        alert('An error occurred while updating the task.');
-      }
-         
-    
-    }else{
-      const { title,description , category,dueDate } = formData;
+  const handleLogin = async () => {
+    const { usernameOrEmail, password } = loginForm;
+    if (!usernameOrEmail || !password) {
+      return alert("Fields are required");
+    }
     try {
-      const response = await axios.post(`${BASE_URL}/api/v1/tasks/add`, {
-        title,
-        description,
-        category,
-        dueDate,
-      },{withCredentials:true});
-  
-      if (response.status === 201 && response.data.data) {
-        console.log('Task added successfully:', response.data.data);
-        setTasks((prevTasks) => {
-          if (!Array.isArray(prevTasks)) {
-            console.error('Previous tasks state is not an array:', prevTasks);
-            return [response.data.data]; // Fallback to ensure valid state
-          }
-          return [...prevTasks, response.data.data];
-        });
-        setFormData({ title: '', description: '', category: '', dueDate: '' });
-        alert('Task added successfully');
+      const response = await axios.post(`${BASE_URL}/api/v1/users/login`, {
+        usernameOrEmail,
+        password,
+      }, { withCredentials: true });
+
+      if (response.status === 200) {
+        setIsLoggedIn(true);
+        setShowLoginModal(false);
+        alert(response.data.message);
       } else {
         alert('Unexpected response from server');
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        alert('Fields are required');
+        alert('Invalid username or password');
       } else {
-        console.error('Error during task addition:', error);
+        console.error('Error during login:', error);
         alert('An error occurred. Please try again later.');
       }
     }
-  }
-      
-    
-    
   };
 
-  const [editingTaskId, setEditingTaskId] = useState(null); // Tracks the task being edited
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/v1/users/register`, registerForm, { withCredentials: true });
+      alert(response.data.message);
+      setIsRegistering(false); // Switch back to login after registering
+    } catch (error) {
+      console.error("Error registering:", error);
+      alert(error.response?.data?.message || "Registration failed");
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/v1/users/logout`, {}, { withCredentials: true });
+      if (response.status === 200) {
+        setIsLoggedIn(false);
+        setLoginForm({ username: '', password: '' });
+        setShowLoginModal(true);
+      } else {
+        alert('Unexpected response from server');
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+      alert('An error occurred. Please try again later.');
+    }
+  };
+
+  const handleAddTask = async () => {
+    const { title, description, category, dueDate } = formData;
+    try {
+      const response = editingTaskId
+        ? await axios.patch(`${BASE_URL}/api/v1/tasks/update/${editingTaskId}`, formData, { withCredentials: true })
+        : await axios.post(`${BASE_URL}/api/v1/tasks/add`, { title, description, category, dueDate }, { withCredentials: true });
+
+      if (response.status === (editingTaskId ? 200 : 201) && response.data.data) {
+        setTasks((prevTasks) => {
+          return editingTaskId
+            ? prevTasks.map((task) => task._id === editingTaskId ? response.data.data : task)
+            : [...prevTasks, response.data.data];
+        });
+        setEditingTaskId(null);
+        setFormData({ title: '', description: '', category: '', dueDate: '' });
+        alert(`Task ${editingTaskId ? 'updated' : 'added'} successfully`);
+      } else {
+        alert('Unexpected response from server');
+      }
+    } catch (error) {
+      console.error('Error during task operation:', error);
+      alert('An error occurred. Please try again later.');
+    }
+  };
+
+  const handleDeleteTask = async (id) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/api/v1/tasks/delete/${id}`, { withCredentials: true });
+      if (response.status === 200) {
+        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
+        alert('Task deleted successfully');
+      } else {
+        alert('Unexpected response from server');
+      }
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      alert('An error occurred while deleting the task.');
+    }
+  };
+
+  const handleEditButtonClick = (id) => {
+    const taskToEdit = tasks.find((task) => task._id === id);
+    if (taskToEdit) {
+      setFormData({
+        title: taskToEdit.title,
+        description: taskToEdit.description,
+        category: taskToEdit.category,
+        dueDate: taskToEdit.dueDate,
+      });
+      setEditingTaskId(taskToEdit._id);
+    }
+  };
+
   const handleCancelEdit = () => {
     setEditingTaskId(null);
     setFormData({ title: '', description: '', category: '', dueDate: '' });
   };
-  
-
-  
-    
-  
-  const handleEditButtonClick = (id) => {
-    const taskToEdit = tasks.find((task) => task._id === id);
-    setFormData({
-      title: taskToEdit.title,
-      description: taskToEdit.description,
-      category: taskToEdit.category,
-      dueDate: taskToEdit.dueDate,
-    });
-    setEditingTaskId(taskToEdit._id);
-  };
-  
-  
-
-  const handleDeleteTask = async (id) => {
-    console.log('Deleting task with id:', id);
-    if (!id) {
-      console.error('Task ID is undefined or invalid.');
-      alert('Task ID is missing. Cannot delete task.');
-      return;
-    }
-    try {
-      const response = await axios.delete(`${BASE_URL}/api/v1/tasks/delete/${id}`,{withCredentials:true});
-      if (response.status === 200) {
-        alert('Task deleted successfully');
-      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
-      } else {
-        console.error('Failed to delete task:', response.data.message);
-      }
-    } catch (error) {
-      console.error('Error deleting task:', error);
-    }
-  };
-  const [isRegistering, setIsRegistering] = useState(false);
-
-const [registerForm, setRegisterForm] = useState({
-  username: "",
-  email: "",
-  password: "",
-});
-
-const handleRegisterChange = (e) => {
-  const { name, value } = e.target;
-  
-  setRegisterForm({ ...registerForm, [name]:value });
-};
-
-const handleRegister = async () => {
-  try {
-    const response = await axios.post(`${BASE_URL}/api/v1/users/register`, registerForm,{withCredentials:true});
-    alert(response.data.message);
-    setIsRegistering(false); // Switch back to login after registering
-  } catch (error) {
-    console.error("Error registering:", error);
-    alert(error.response?.data?.message || "Registration failed");
-  }
-};
 
 
   if (!isLoggedIn) {
