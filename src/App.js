@@ -77,14 +77,10 @@ function App() {
             usernameOrEmail, // Dynamically set field based on input
             password: password,
           },{withCredentials:true});
-          const { accessToken } = response.data;
+          
         // console.log("Access Token:", accessToken);
 
-        if (accessToken) {
-            localStorage.setItem("accessToken", accessToken); // Store token in localStorage
-        } else {
-            console.error('Access token not found in response');
-        }
+       
 
           
          
@@ -95,7 +91,7 @@ function App() {
            
 
         // Store token in localStorage
-        localStorage.setItem("accessToken", accessToken);
+        
             setIsLoggedIn(true);
             setShowLoginModal(false);
             alert(response.message);
@@ -125,7 +121,7 @@ function App() {
       console.log('Logout successful:', response.data)
       if (response.status === 200) {
         // Handle successful logout
-        localStorage.removeItem("accessToken");
+        
         setIsLoggedIn(false);
         setLoginForm({ username: '', password: '' });
         setShowLoginModal(true);
