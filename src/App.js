@@ -38,7 +38,7 @@ function App() {
   
   
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  useEffect((isLoggedIn) => {
+  useEffect(() => {
     fetchTasks();
   }, [isLoggedIn]);
   
